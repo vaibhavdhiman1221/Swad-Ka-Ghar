@@ -33,20 +33,25 @@ export default function Navbar() {
       className={cn(
         'fixed top-0 w-full z-50 transition-all duration-300 border-b flex items-center',
         scrolled
-          ? 'bg-background/90 backdrop-blur-md h-16 border-outline-variant/20'
+          ? 'bg-background/90 backdrop-blur-md h-16 border-outline-variant/20 shadow-sm'
           : 'bg-transparent h-20 border-transparent'
       )}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center w-full">
+      <div className="w-full px-8 lg:px-20 flex items-center justify-center gap-6 lg:gap-8">
         <Link
           to="/"
-          className="text-2xl md:text-3xl font-bold font-serif italic text-primary tracking-tighter shrink-0"
+          className="flex items-center gap-4 group shrink-0"
         >
-          Swad Ka Ghar
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full overflow-hidden shadow-sm border border-stone-100 transition-transform duration-500 group-hover:rotate-[360deg] flex items-center justify-center p-1">
+            <img src="/Assets/Logo.jpeg" alt="Ghar Ka Swad" className="w-full h-full object-contain" />
+          </div>
+          <span className="text-xl md:text-3xl font-bold font-serif italic text-primary tracking-tighter transition-colors group-hover:text-stone-900">
+            Ghar Ka Swad
+          </span>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center space-x-10">
+        <div className="hidden lg:flex items-center space-x-6 xl:space-x-8 px-4">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.path}
@@ -63,8 +68,8 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center space-x-2 md:space-x-4 shrink-0">
-          <Link to="/account" className="relative p-2.5 text-primary hover:scale-110 transition-all duration-300 rounded-full hover:bg-surface-muted">
+        <div className="flex items-center space-x-2 md:space-x-6 shrink-0">
+          <Link to="/account?tab=liked" className="relative p-2.5 text-primary hover:scale-110 transition-all duration-300 rounded-full hover:bg-surface-muted">
             <Heart size={18} />
           </Link>
           <Link to="/cart" className="relative p-2.5 text-primary hover:scale-110 transition-all duration-300 rounded-full hover:bg-surface-muted">
@@ -122,9 +127,13 @@ export default function Navbar() {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="pt-8 mt-4 border-t border-outline-variant/10 flex flex-col gap-4"
             >
-               <button className="w-full bg-primary text-white py-5 font-bold uppercase tracking-[0.3em] text-[10px] shadow-xl shadow-primary/20">
+               <Link 
+                 to="/menu" 
+                 onClick={() => setIsOpen(false)} 
+                 className="w-full bg-primary text-white py-5 font-bold uppercase tracking-[0.3em] text-[10px] shadow-xl shadow-primary/20 text-center"
+               >
                  Order Online
-               </button>
+               </Link>
                <Link 
                  to="/account" 
                  onClick={() => setIsOpen(false)} 

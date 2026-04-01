@@ -6,8 +6,13 @@ export default function Footer() {
     <footer className="bg-surface-muted pt-10 pb-6 md:pt-20 md:pb-10 border-t border-outline-variant/30">
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-12 mb-8 md:mb-16">
         <div className="col-span-2 md:col-span-1 lg:col-span-1 space-y-4 md:space-y-6">
-          <Link to="/" className="text-2xl md:text-3xl font-bold font-serif italic text-primary tracking-tighter">
-            Swad Ka Ghar
+          <Link to="/" className="flex items-center gap-3 group">
+             <div className="w-10 h-10 md:w-16 md:h-16 rounded-full overflow-hidden border border-stone-100 shadow-sm transition-transform duration-500 group-hover:rotate-[360deg] flex items-center justify-center bg-white p-1">
+                <img src="/Assets/Logo.jpeg" alt="Ghar Ka Swad" className="w-full h-full object-contain" />
+             </div>
+             <span className="text-xl md:text-2xl font-bold font-serif italic text-primary tracking-tighter">
+                Ghar Ka Swad
+             </span>
           </Link>
           <p className="text-on-surface-variant text-xs md:text-sm leading-relaxed max-w-xs">
             Authentic Indian culinary heritage, reimagined for the contemporary palate. Every bite is a story of tradition, spices, and soul.
@@ -60,14 +65,14 @@ export default function Footer() {
             </li>
             <li className="flex items-center gap-2 md:gap-3">
               <Mail className="w-4 h-4 md:w-[18px] md:h-[18px] text-primary shrink-0" />
-              <span>hello@swadkaghar.com</span>
+              <span>hello@gharkaswad.com</span>
             </li>
           </ul>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6 md:pt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold text-center md:text-left">
-        <p>© 2024 Swad Ka Ghar. Crafted with Heritage.</p>
+        <p>© 2024 Ghar Ka Swad. Crafted with Heritage.</p>
         <div className="flex items-center gap-2 text-primary">
           <MapPin size={12} />
           <span>New Delhi, India</span>

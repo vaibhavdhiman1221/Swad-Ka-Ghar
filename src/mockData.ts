@@ -158,7 +158,7 @@ export const TESTIMONIALS: Testimonial[] = [
     id: '3',
     name: 'Suhani Gupta',
     role: 'Corporate Banker',
-    content: 'The hospitality at Swad Ka Ghar is as warm as their food. It truly feels like coming home to family every single time.',
+    content: 'The hospitality at Ghar Ka Swad is as warm as their food. It truly feels like coming home to family every single time.',
     avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3Elcx0FJXRUR2bbsu2oKmhv5MP7eMIyQ9pTMRPFqV3jrQr1VdkSW55IoMLiCVki0oxu--GnAdxeT1Z1dpsCGLF0aYrS5eXtQKOEBRm6-xvYawQxXwnvQ16QClROZlsqQtLV3rUj-eb6RKpWXcSSjfeqkTtMzYt55VPHPC6mdscxFYWaAOxdWTYWXZ4YrFUHHMJpR0Ha6UPG_6h7Re8VkXcOmGePy6ndMQSDuhkRtJFjjOqXjGXcP8LkPDdLTHGPFcrL06SUrdjbs'
   }
 ];

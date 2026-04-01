@@ -111,7 +111,7 @@ export default function Contact() {
             </div>
             <div className="relative h-full p-6 md:p-8 lg:p-12 flex flex-col justify-between space-y-8 lg:space-y-12">
               <div>
-                <span className="text-primary font-bold tracking-widest uppercase text-[10px] lg:text-xs mb-2 lg:mb-4 block">Visit Swad Ka Ghar</span>
+                <span className="text-primary font-bold tracking-widest uppercase text-[10px] lg:text-xs mb-2 lg:mb-4 block">Visit Ghar Ka Swad</span>
                 <h2 className="font-serif text-2xl lg:text-3xl mb-6 lg:mb-8">Contact Information</h2>
                 <div className="space-y-6 lg:space-y-8">
                   <div className="flex items-start gap-3 lg:gap-4">
@@ -121,7 +121,7 @@ export default function Contact() {
                     <div>
                       <h4 className="font-bold text-base lg:text-lg mb-1">Talk to Us</h4>
                       <p className="text-stone-500 text-sm lg:text-base">+91 98765 43210</p>
-                      <p className="text-stone-500 text-sm lg:text-base">hello@swadkaghar.com</p>
+                      <p className="text-stone-500 text-sm lg:text-base">hello@gharkaswad.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 lg:gap-4">

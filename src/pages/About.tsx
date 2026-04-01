@@ -103,7 +103,7 @@ export default function About() {
               <div className="h-1 w-16 lg:w-20 bg-primary/20"></div>
             </div>
             <div className="space-y-4 lg:space-y-6 font-lora text-base lg:text-xl text-text-muted italic leading-relaxed">
-              <p>Established in the heart of Muzaffarnagar, Swad Ka Ghar began as a humble kitchen with a single purpose: to preserve the authentic, unadulterated flavors of our ancestors. Our recipes haven't changed in fifty years, passed down through whispers and hands-on guidance from grandmother to grandchild.</p>
+              <p>Established in the heart of Muzaffarnagar, Ghar Ka Swad began as a humble kitchen with a single purpose: to preserve the authentic, unadulterated flavors of our ancestors. Our recipes haven't changed in fifty years, passed down through whispers and hands-on guidance from grandmother to grandchild.</p>
               <p>We believe that luxury lies in purity. That's why we source our milk from local farms daily and continue to use traditional copper vats to slow-cook our sweets. Every piece of Mithai is a testament to the patient art of Indian confectionary.</p>
             </div>
           </div>
