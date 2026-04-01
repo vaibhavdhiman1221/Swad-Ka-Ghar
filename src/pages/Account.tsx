@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, ShoppingBag, Heart, MapPin, LogOut, Package, ChevronRight, Edit2, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCart } from '../context/CartContext';
+import { MENU_ITEMS } from '@/mockData';
 
 const PROFILE_DATA = {
   name: 'Vaibhav Dhiman',
@@ -35,24 +37,34 @@ const ORDER_HISTORY = [
   },
 ];
 
+// Map LIKED_ITEMS to actual mock data if possible, or keep as is but add price as number for cart
 const LIKED_ITEMS = [
   {
-    id: 1,
+    id: 'sweet-1',
     name: 'Kesar Peda',
-    price: '₹600/kg',
+    price: 600,
     image: 'https://images.unsplash.com/photo-1605197132819-b7540a8c0840?auto=format&fit=crop&q=80&w=800',
+    category: 'Sweets',
+    dietary: 'Veg' as const,
+    description: 'Traditional saffron-infused milk fudge.'
   },
   {
-    id: 2,
+    id: 'sweet-2',
     name: 'Motichoor Ladoo',
-    price: '₹500/kg',
+    price: 500,
     image: 'https://images.unsplash.com/photo-1599598425947-3300262939fa?auto=format&fit=crop&q=80&w=800',
+    category: 'Sweets',
+    dietary: 'Veg' as const,
+    description: 'Classic Indian sweet made from tiny gram flour pearls.'
   },
   {
-    id: 3,
+    id: 'sweet-3',
     name: 'Kaju Katli',
-    price: '₹1000/kg',
+    price: 1000,
     image: 'https://images.unsplash.com/photo-1625938146369-adc83368bda7?auto=format&fit=crop&q=80&w=800',
+    category: 'Sweets',
+    dietary: 'Veg' as const,
+    description: 'Premium cashew nut fudge.'
   },
 ];
 
@@ -85,6 +97,7 @@ const TABS = [
 ];
 
 export default function Account() {
+  const { addToCart } = useCart();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabParam || 'profile');
@@ -113,16 +126,21 @@ export default function Account() {
           {/* Sidebar Navigation */}
           <div className="w-full lg:w-64 shrink-0">
             <div className="bg-white border border-stone-100 shadow-sm rounded-none overflow-hidden sticky top-20 md:top-28">
-              <div className="p-4 md:p-6 border-b border-stone-100 bg-stone-50/50 flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-primary font-serif text-lg md:text-xl font-bold">
-                    {PROFILE_DATA.name.charAt(0)}
-                  </span>
+              <div className="p-4 md:p-6 border-b border-stone-100 bg-stone-50/50 flex items-center justify-between lg:justify-start gap-3 md:gap-4">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                    <span className="text-primary font-serif text-lg md:text-xl font-bold">
+                      {PROFILE_DATA.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-stone-900 text-xs md:text-sm">{PROFILE_DATA.name}</h3>
+                    <p className="text-[9px] md:text-[10px] text-stone-500 uppercase tracking-wider mt-0.5">Member</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-stone-900 text-xs md:text-sm">{PROFILE_DATA.name}</h3>
-                  <p className="text-[9px] md:text-[10px] text-stone-500 uppercase tracking-wider mt-0.5">Member</p>
-                </div>
+                <button className="lg:hidden p-2 text-red-600 hover:bg-red-50 transition-colors rounded-none flex items-center justify-center" title="Log Out">
+                  <LogOut size={18} />
+                </button>
               </div>
               <nav className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible hide-scrollbar">
                 {TABS.map((tab) => {
@@ -133,7 +151,7 @@ export default function Account() {
                       key={tab.id}
                       onClick={() => handleTabChange(tab.id)}
                       className={cn(
-                        "flex items-center gap-2 md:gap-3 px-4 py-3 md:px-6 md:py-4 text-xs md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap lg:whitespace-normal border-b lg:border-b-0 lg:border-l-2",
+                        "flex items-center gap-2 md:gap-3 px-4 pt-3 pb-2.5 md:px-6 md:py-4 text-xs md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap lg:whitespace-normal border-b lg:border-b-0 lg:border-l-2",
                         isActive 
                           ? "text-primary border-primary bg-primary/5" 
                           : "text-stone-500 border-transparent hover:bg-stone-50 hover:text-stone-900"
@@ -146,8 +164,8 @@ export default function Account() {
                   );
                 })}
               </nav>
-              <div className="p-3 md:p-4 border-t border-stone-100">
-                <button className="flex items-center gap-2 md:gap-3 px-3 py-2 md:px-4 md:py-3 w-full text-xs md:text-sm font-bold tracking-wide text-red-600 hover:bg-red-50 transition-colors rounded-none">
+              <div className="hidden lg:block p-3 md:p-4 border-t border-stone-100">
+                <button className="hidden lg:flex items-center gap-2 md:gap-3 px-3 py-2 md:px-4 md:py-3 w-full text-xs md:text-sm font-bold tracking-wide text-red-600 hover:bg-red-50 transition-colors rounded-none">
                   <LogOut className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                   Log Out
                 </button>
@@ -268,8 +286,11 @@ export default function Account() {
                             </div>
                             <div className="p-3 md:p-4 flex flex-col flex-grow">
                               <h3 className="font-serif font-bold text-stone-900 text-sm md:text-base mb-0.5 md:mb-1 truncate">{item.name}</h3>
-                              <p className="text-primary text-xs md:text-sm font-medium mb-3 md:mb-4">{item.price}</p>
-                              <button className="mt-auto w-full py-1.5 md:py-2 border border-primary text-primary text-[10px] md:text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors">
+                              <p className="text-primary text-xs md:text-sm font-medium mb-3 md:mb-4">₹{item.price}</p>
+                              <button 
+                                onClick={() => addToCart(item)}
+                                className="mt-auto w-full py-1.5 md:py-2 border border-primary text-primary text-[10px] md:text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors"
+                              >
                                 Add to Cart
                               </button>
                             </div>

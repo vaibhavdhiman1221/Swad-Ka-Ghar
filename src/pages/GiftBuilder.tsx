@@ -1,25 +1,85 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Search, Plus, ShoppingBag, Heart, Trash2 } from 'lucide-react';
+import { Search, Plus, ShoppingBag, Heart, Trash2, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCart } from '../context/CartContext';
 
 const BOX_SIZES = [
-  { id: 'small', name: 'Small Box', capacity: '500g', varieties: 'Up to 4', price: 850, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBcb5-aq9TofDPuzqmxjPqYDh-A9rl7GPLEwuEa7mK2VoTowEQf7cDhqINGMAy5EvEBBNyJeToqsrPxrIdT3ZvFKqdoiY54Q0D9YHp2Sv4DxMrXCezcsMVFXDdFEQH89LfqN6BFQio_c3ZIz9KD8lZ-tnVc1G3LCfpE5iPPq2x5T4MxZUdQ7sHJev0QTd5W_shO81q0EEIDlsIBzRlNYsOuuGecJT_YYF9aFYV41j7FSHgCOh2nTjFCXV_BBbOzUW_G2ArXT-8TUoE' },
-  { id: 'medium', name: 'Medium Box', capacity: '1kg', varieties: 'Up to 8', price: 1600, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAS4dCzKTzjlkAhN4VvR6fYUTN9F9YLx44oZEZZ6owk2tNJU6IqJ7cFleOoMXdRab7EeVt6pkp9HXWJ0-vYsHZGOK3q8OOetwNtCG1QOhYsUwR2ylp-kFO_D3QNAGgKFoUfW55ozpyTAaH7IC4eyVIVTyhrzNlLYz79oMDS95dM_w4QsH7g6HdPurQw0I0rcAr-6gTwNhIXOl56o8BXLT4VyZfGxWQLB1DZU-zDaPFsXRn_YQR4SLGxxfSocgwlbafLnyHtIHRTEsM', popular: true },
-  { id: 'large', name: 'Large Box', capacity: '2kg', varieties: 'Unlimited', price: 3000, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4VtvfkMVKRq_rJg-3fdmT3KR3zlLCUHqrf7b-eTbLx3-39kch4DtvGR6PFmxVtCjbdxgokUCtBw1OwYJHCjoni8N5ABisZ8cmO8bBKrUehUzC2pzzbCNctuvSvl27DhymldSWsVXMxIDx5qCCMwIV_1gTLVepGMl1jhfzR5oVgCCjMPSZlc6oWMRej0cKsMHtnftIH2iVjTZgbg-E5f05XraZdNMf1JuB3IKQO24SnW-Q-1KvFhfrtfTrIDETiC6Oo06oP0Iwm2w' }
+  { id: 'small', name: 'Small Box', capacity: 500, varieties: 'Up to 4', price: 850, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBcb5-aq9TofDPuzqmxjPqYDh-A9rl7GPLEwuEa7mK2VoTowEQf7cDhqINGMAy5EvEBBNyJeToqsrPxrIdT3ZvFKqdoiY54Q0D9YHp2Sv4DxMrXCezcsMVFXDdFEQH89LfqN6BFQio_c3ZIz9KD8lZ-tnVc1G3LCfpE5iPPq2x5T4MxZUdQ7sHJev0QTd5W_shO81q0EEIDlsIBzRlNYsOuuGecJT_YYF9aFYV41j7FSHgCOh2nTjFCXV_BBbOzUW_G2ArXT-8TUoE' },
+  { id: 'medium', name: 'Medium Box', capacity: 1000, varieties: 'Up to 8', price: 1600, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAS4dCzKTzjlkAhN4VvR6fYUTN9F9YLx44oZEZZ6owk2tNJU6IqJ7cFleOoMXdRab7EeVt6pkp9HXWJ0-vYsHZGOK3q8OOetwNtCG1QOhYsUwR2ylp-kFO_D3QNAGgKFoUfW55ozpyTAaH7IC4eyVIVTyhrzNlLYz79oMDS95dM_w4QsH7g6HdPurQw0I0rcAr-6gTwNhIXOl56o8BXLT4VyZfGxWQLB1DZU-zDaPFsXRn_YQR4SLGxxfSocgwlbafLnyHtIHRTEsM', popular: true },
+  { id: 'large', name: 'Large Box', capacity: 2000, varieties: 'Unlimited', price: 3000, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4VtvfkMVKRq_rJg-3fdmT3KR3zlLCUHqrf7b-eTbLx3-39kch4DtvGR6PFmxVtCjbdxgokUCtBw1OwYJHCjoni8N5ABisZ8cmO8bBKrUehUzC2pzzbCNctuvSvl27DhymldSWsVXMxIDx5qCCMwIV_1gTLVepGMl1jhfzR5oVgCCjMPSZlc6oWMRej0cKsMHtnftIH2iVjTZgbg-E5f05XraZdNMf1JuB3IKQO24SnW-Q-1KvFhfrtfTrIDETiC6Oo06oP0Iwm2w' }
 ];
 
 const SWEETS = [
-  { id: 's1', name: 'Motichoor Ladoo', desc: 'Soft pearl-sized gram flour balls fried in pure ghee.', price: 45, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAYrQGcdguOefisMMKLG1NPiUBLpAAuFq7KOSVNa4QsGUWVq4x3picQsRRWsAgb6DTGXEZ9KDAi_FPSOqUPNO6BJSTz4qybjbaxvfEOwoEQ2lfnpPwShXz4KPwWZmXC0MkqCqvb97uh__Ym_yrwzI19uKfSfqAW80sPoN_g8JiAat8JcPybsyKhgXV8Ym-QGJguQ8202ZdktFltxR6fuqxH6nbsibSIItE4o6ldihFZFXhlb7HjsXtY3IBWeNopkAtFsRpXhq8FUmQ' },
-  { id: 's2', name: 'Kaju Katli', desc: 'The classic cashew fudge with edible silver leaf.', price: 55, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCkQ-yIK4jL4TWNU5Pe8PJnfuvzhwW9chxRkWcDkQSaqq-2lM9tyW3OxynQq8M-DQi9pQO2bPjguLmKdFpaWTpNY3Xi7R1Z8AXQXUPW9RDWUJU4HfjMX7jOkCTRrokcj1fzgv7EPg_NhEjDh0Nqk8_qGt-oNt3Ll2SYwwqje7DZDK-W03MAESzyfeLCGuKY5wdXRjy0vWg8HRG138VgTJ4J-ufMom2tnR8BExeRQT03F0-5qh2aWbhs3SzFPioC4-S_KJkPd2kboV0', bestseller: true },
-  { id: 's3', name: 'Gulab Jamun', desc: 'Deep-fried milk solids in rose flavored syrup.', price: 40, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDuIYXIcze6yC67PF7wN8tgjHKW1Fy6DLjfzGJmkaAWalVfwyiQlrTEdTCqIiLKg6aLDqcVd7BX0FdLnst_MnRuQIMAdrSgOwGTFVM9A2ebYkHffkuXq9gHaxTaUqv1wQaG-ZultBmh8gxWXLWcNyfYZMmSL5aWPLrhx-sV6jvy7SrZIgZwO2I53x2CQsnoLm2sX4k4ZiGLZxHJ3dPE9Ts_4_SLUZAkhTCTmE3mCi7l9IQJoe0bYjOsRUhCggmZs3wExem4kTuhiN0' },
-  { id: 's4', name: 'Besan Ladoo', desc: 'Slow-roasted gram flour with ghee and cardamom.', price: 35, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBmNwA8gqNkV-bFdaD_aFGCMdRrtkzEC-mOtTIsodGsDMfIyvSChTwb0tIv3PFq00cmjs_7an7QZ0uXLR3amOibLwnBSwOKyzAFmxP0JaFNLqrKObcgKjrsSu-TpqjxU6tV6_T_sAcAb9LKoGJvZu66QcAsydQA6plsFwBQoubPKHf2cDugjTwhiLrVZLuJ1TjAOl1cqwR1pIm6Sxo1WXGAiyVWD0h5P-g8dHm15h4bNS1Be4EPWeAV0fJNUVo79n_ZyW1jDN7VULE' },
-  { id: 's5', name: 'Pista Roll', desc: 'Rich cashew shell filled with artisanal pistachio paste.', price: 65, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1h2UFhLR0gI3d_Uh1xTSfq4cBJVK0fZmlj6UuHT3qm0yeBSRJktf2N6CKXqQE-GaDPRhunHuCcRc9ILbEdeL_a4w3NFoBf4cP6Aj9JxuUYPQQmxMCupB9VtVPCqRTLPAXmbzeRV7AOkQ0z-hB6w3xOkHa3dcHXOCo2gpXZHx0RIcw4HeXNZN-CZ1ZWe5-t0De2XuC_U5lofLdGxZyT8Q1VjM59OTbQKxOENB3aV_dt8xzJJBxHh76glOwu0mz5M_zvioDefrST5w' },
-  { id: 's6', name: 'Milk Cake', desc: 'Traditional grainy fudge made by slow-cooking milk.', price: 50, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9367__BLsoL8LGYjUojeLcbmyhjutA_SVikx424lFmTJZqstxIpuLjgNTpEVZKqtEAXb7NIaZqml3snwf1TFZgw6cB36-HkYCapweOF5GwAJdvTKFoV1n3Bp-ut8gO0n7VMMAOm_PMqJ5MnPu1YUli61t1HatPS6T3b_Tm3PS0QLjdMbpo-u0etW5AAV_Nr-XZclESkxL0vcASIVxAsN4ZDpT5h22rViQ_Ou7sLLgvnkEKITYiYoW33OyCSZOwzHOMmxrPsw8pNg' }
+  { id: 's1', name: 'Motichoor Ladoo', desc: 'Soft pearl-sized gram flour balls fried in pure ghee.', price: 45, weight: 25, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAYrQGcdguOefisMMKLG1NPiUBLpAAuFq7KOSVNa4QsGUWVq4x3picQsRRWsAgb6DTGXEZ9KDAi_FPSOqUPNO6BJSTz4qybjbaxvfEOwoEQ2lfnpPwShXz4KPwWZmXC0MkqCqvb97uh__Ym_yrwzI19uKfSfqAW80sPoN_g8JiAat8JcPybsyKhgXV8Ym-QGJguQ8202ZdktFltxR6fuqxH6nbsibSIItE4o6ldihFZFXhlb7HjsXtY3IBWeNopkAtFsRpXhq8FUmQ' },
+  { id: 's2', name: 'Kaju Katli', desc: 'The classic cashew fudge with edible silver leaf.', price: 55, weight: 20, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCkQ-yIK4jL4TWNU5Pe8PJnfuvzhwW9chxRkWcDkQSaqq-2lM9tyW3OxynQq8M-DQi9pQO2bPjguLmKdFpaWTpNY3Xi7R1Z8AXQXUPW9RDWUJU4HfjMX7jOkCTRrokcj1fzgv7EPg_NhEjDh0Nqk8_qGt-oNt3Ll2SYwwqje7DZDK-W03MAESzyfeLCGuKY5wdXRjy0vWg8HRG138VgTJ4J-ufMom2tnR8BExeRQT03F0-5qh2aWbhs3SzFPioC4-S_KJkPd2kboV0', bestseller: true },
+  { id: 's3', name: 'Gulab Jamun', desc: 'Deep-fried milk solids in rose flavored syrup.', price: 40, weight: 30, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDuIYXIcze6yC67PF7wN8tgjHKW1Fy6DLjfzGJmkaAWalVfwyiQlrTEdTCqIiLKg6aLDqcVd7BX0FdLnst_MnRuQIMAdrSgOwGTFVM9A2ebYkHffkuXq9gHaxTaUqv1wQaG-ZultBmh8gxWXLWcNyfYZMmSL5aWPLrhx-sV6jvy7SrZIgZwO2I53x2CQsnoLm2sX4k4ZiGLZxHJ3dPE9Ts_4_SLUZAkhTCTmE3mCi7l9IQJoe0bYjOsRUhCggmZs3wExem4kTuhiN0' },
+  { id: 's4', name: 'Besan Ladoo', desc: 'Slow-roasted gram flour with ghee and cardamom.', price: 35, weight: 25, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBmNwA8gqNkV-bFdaD_aFGCMdRrtkzEC-mOtTIsodGsDMfIyvSChTwb0tIv3PFq00cmjs_7an7QZ0uXLR3amOibLwnBSwOKyzAFmxP0JaFNLqrKObcgKjrsSu-TpqjxU6tV6_T_sAcAb9LKoGJvZu66QcAsydQA6plsFwBQoubPKHf2cDugjTwhiLrVZLuJ1TjAOl1cqwR1pIm6Sxo1WXGAiyVWD0h5P-g8dHm15h4bNS1Be4EPWeAV0fJNUVo79n_ZyW1jDN7VULE' },
+  { id: 's5', name: 'Pista Roll', desc: 'Rich cashew shell filled with artisanal pistachio paste.', price: 65, weight: 20, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1h2UFhLR0gI3d_Uh1xTSfq4cBJVK0fZmlj6UuHT3qm0yeBSRJktf2N6CKXqQE-GaDPRhunHuCcRc9ILbEdeL_a4w3NFoBf4cP6Aj9JxuUYPQQmxMCupB9VtVPCqRTLPAXmbzeRV7AOkQ0z-hB6w3xOkHa3dcHXOCo2gpXZHx0RIcw4HeXNZN-CZ1ZWe5-t0De2XuC_U5lofLdGxZyT8Q1VjM59OTbQKxOENB3aV_dt8xzJJBxHh76glOwu0mz5M_zvioDefrST5w' },
+  { id: 's6', name: 'Milk Cake', desc: 'Traditional grainy fudge made by slow-cooking milk.', price: 50, weight: 30, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9367__BLsoL8LGYjUojeLcbmyhjutA_SVikx424lFmTJZqstxIpuLjgNTpEVZKqtEAXb7NIaZqml3snwf1TFZgw6cB36-HkYCapweOF5GwAJdvTKFoV1n3Bp-ut8gO0n7VMMAOm_PMqJ5MnPu1YUli61t1HatPS6T3b_Tm3PS0QLjdMbpo-u0etW5AAV_Nr-XZclESkxL0vcASIVxAsN4ZDpT5h22rViQ_Ou7sLLgvnkEKITYiYoW33OyCSZOwzHOMmxrPsw8pNg' }
 ];
 
 export default function GiftBuilder() {
-  const [selectedBox, setSelectedBox] = React.useState(BOX_SIZES[1]);
+  const { addToCart } = useCart();
+  const [selectedBox, setSelectedBox] = useState(BOX_SIZES[1]);
+  const [selectedSweets, setSelectedSweets] = useState<{ id: string; quantity: number }[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const addSweet = (sweetId: string) => {
+    setSelectedSweets(prev => {
+      const existing = prev.find(s => s.id === sweetId);
+      if (existing) {
+        return prev.map(s => s.id === sweetId ? { ...s, quantity: s.quantity + 1 } : s);
+      }
+      return [...prev, { id: sweetId, quantity: 1 }];
+    });
+  };
+
+  const removeSweet = (sweetId: string) => {
+    setSelectedSweets(prev => {
+      const existing = prev.find(s => s.id === sweetId);
+      if (existing && existing.quantity > 1) {
+        return prev.map(s => s.id === sweetId ? { ...s, quantity: s.quantity - 1 } : s);
+      }
+      return prev.filter(s => s.id !== sweetId);
+    });
+  };
+
+  const currentWeight = useMemo(() => {
+    return selectedSweets.reduce((total, s) => {
+      const sweet = SWEETS.find(sw => sw.id === s.id);
+      return total + (sweet?.weight || 0) * s.quantity;
+    }, 0);
+  }, [selectedSweets]);
+
+  const sweetsPrice = useMemo(() => {
+    return selectedSweets.reduce((total, s) => {
+      const sweet = SWEETS.find(sw => sw.id === s.id);
+      return total + (sweet?.price || 0) * s.quantity;
+    }, 0);
+  }, [selectedSweets]);
+
+  const subtotal = selectedBox.price + sweetsPrice;
+  const fullness = Math.min(100, (currentWeight / selectedBox.capacity) * 100);
+
+  const handleAddToCart = () => {
+    const boxItem = {
+      id: `gift-box-${Date.now()}`,
+      name: `Custom ${selectedBox.name}`,
+      description: `Tailored gift box with ${selectedSweets.length} varieties.`,
+      price: subtotal,
+      image: selectedBox.img,
+      category: 'Gifts',
+      dietary: 'Veg',
+      isSpecial: false
+    };
+    addToCart(boxItem);
+    setSelectedSweets([]); // Reset builder
+  };
+
+  const filteredSweets = SWEETS.filter(s => 
+    s.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="pt-16 sm:pt-20 pb-16 sm:pb-24 bg-stone-50/30">
@@ -110,7 +170,7 @@ export default function GiftBuilder() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-serif text-lg sm:text-xl mb-0.5 sm:mb-1">{box.name}</h3>
-                    <p className="text-stone-500 text-xs sm:text-sm mb-1 sm:mb-4">{box.capacity} • {box.varieties}</p>
+                    <p className="text-stone-500 text-xs sm:text-sm mb-1 sm:mb-4">{box.capacity}g • {box.varieties}</p>
                     <span className="text-primary font-bold text-sm sm:text-base">₹{box.price}</span>
                   </div>
                 </div>
@@ -130,11 +190,17 @@ export default function GiftBuilder() {
               </div>
               <div className="relative w-full md:max-w-xs">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
-                <input className="w-full bg-white border border-stone-200 py-2.5 sm:py-3 pl-9 sm:pl-10 pr-4 focus:ring-1 focus:ring-primary text-xs sm:text-sm shadow-sm" placeholder="Search sweets..." type="text" />
+                <input 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white border border-stone-200 py-2.5 sm:py-3 pl-9 sm:pl-10 pr-4 focus:ring-1 focus:ring-primary text-xs sm:text-sm shadow-sm" 
+                  placeholder="Search sweets..." 
+                  type="text" 
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
-              {SWEETS.map((sweet) => (
+              {filteredSweets.map((sweet) => (
                 <div key={sweet.id} className="group bg-white overflow-hidden border border-stone-200 transition-shadow hover:shadow-md flex flex-col">
                   <div className="h-28 sm:h-40 md:h-48 relative overflow-hidden shrink-0">
                     <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src={sweet.img} alt={sweet.name} referrerPolicy="no-referrer" />
@@ -149,7 +215,11 @@ export default function GiftBuilder() {
                     <p className="text-stone-500 text-[9px] sm:text-xs mb-2 sm:mb-3 line-clamp-2 flex-1">{sweet.desc}</p>
                     <div className="flex items-center justify-between mt-auto">
                       <span className="text-primary font-bold text-xs sm:text-sm">₹{sweet.price} <span className="text-[9px] sm:text-xs font-normal text-stone-400">/ pc</span></span>
-                      <button className="bg-primary text-white p-1.5 sm:p-2 hover:bg-primary-dark transition-colors">
+                      <button 
+                        onClick={() => addSweet(sweet.id)}
+                        disabled={currentWeight >= selectedBox.capacity}
+                        className="bg-primary text-white p-1.5 sm:p-2 hover:bg-primary-dark transition-colors disabled:opacity-50"
+                      >
                         <Plus size={14} className="sm:w-4 sm:h-4" />
                       </button>
                     </div>
@@ -165,59 +235,89 @@ export default function GiftBuilder() {
           <div className="sticky top-24 space-y-6">
             <div className="bg-white p-5 sm:p-8 border border-stone-200 shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1.5 bg-stone-100">
-                <div className="w-2/3 h-full bg-primary transition-all duration-700 ease-out"></div>
+                <motion.div 
+                  animate={{ width: `${fullness}%` }}
+                  className="h-full bg-primary transition-all duration-700 ease-out"
+                ></motion.div>
               </div>
               <div className="flex justify-between items-center mb-4 sm:mb-6">
                 <div>
                   <h3 className="font-serif text-xl sm:text-2xl uppercase tracking-tighter mb-0.5 sm:mb-1">Your Box</h3>
                   <p className="text-[8px] sm:text-[9px] text-stone-400 uppercase tracking-[0.2em] font-bold">Custom Curation</p>
                 </div>
-                <span className="text-[9px] sm:text-[10px] font-bold px-2 sm:px-3 py-1 sm:py-1.5 bg-primary/10 text-primary uppercase tracking-widest border border-primary/20">65% Full</span>
+                <span className={cn(
+                  "text-[9px] sm:text-[10px] font-bold px-2 sm:px-3 py-1.5 bg-primary/10 text-primary uppercase tracking-widest border border-primary/20",
+                  fullness === 100 && "bg-secondary/10 text-secondary border-secondary/20"
+                )}>
+                  {Math.round(fullness)}% Full
+                </span>
               </div>
+              
               <div className="aspect-[4/3] sm:aspect-square bg-stone-50 flex items-center justify-center border border-dashed border-stone-300 mb-4 sm:mb-6 p-3 sm:p-4 relative">
                 <div className="absolute inset-0 border-[8px] sm:border-[16px] border-white/50 pointer-events-none"></div>
-                <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full h-full">
-                  <div className="bg-white overflow-hidden border border-stone-100">
-                    <img className="w-full h-full object-cover" src={SWEETS[0].img} alt="item" referrerPolicy="no-referrer" />
+                {selectedSweets.length === 0 ? (
+                  <div className="text-center text-stone-300">
+                    <Plus size={32} className="mx-auto mb-2 opacity-50" />
+                    <p className="text-[10px] uppercase tracking-widest font-bold">Add Sweets</p>
                   </div>
-                  <div className="bg-white overflow-hidden border border-stone-100">
-                    <img className="w-full h-full object-cover" src={SWEETS[1].img} alt="item" referrerPolicy="no-referrer" />
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full h-full">
+                    {selectedSweets.slice(0, 4).map((s, idx) => {
+                      const sweet = SWEETS.find(sw => sw.id === s.id);
+                      return (
+                        <div key={idx} className="bg-white overflow-hidden border border-stone-100 relative group/item">
+                          <img className="w-full h-full object-cover" src={sweet?.img} alt="item" referrerPolicy="no-referrer" />
+                          <div className="absolute inset-0 bg-stone-900/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                             <button onClick={() => removeSweet(s.id)} className="p-1 bg-white text-stone-900 rounded-full"><Minus size={12}/></button>
+                             <span className="text-white font-bold text-xs">{s.quantity}</span>
+                             <button onClick={() => addSweet(s.id)} className="p-1 bg-white text-stone-900 rounded-full" disabled={currentWeight >= selectedBox.capacity}><Plus size={12}/></button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {selectedSweets.length < 4 && Array(4 - selectedSweets.length).fill(0).map((_, i) => (
+                      <div key={`empty-${i}`} className="bg-stone-100/50 flex items-center justify-center border border-dashed border-stone-200">
+                        <Plus size={16} className="text-stone-300 sm:w-5 sm:h-5" />
+                      </div>
+                    ))}
                   </div>
-                  <div className="bg-stone-100/50 flex items-center justify-center border border-dashed border-stone-200">
-                    <Plus size={16} className="text-stone-300 sm:w-5 sm:h-5" />
-                  </div>
-                  <div className="bg-stone-100/50 flex items-center justify-center border border-dashed border-stone-200">
-                    <Plus size={16} className="text-stone-300 sm:w-5 sm:h-5" />
-                  </div>
-                </div>
+                )}
               </div>
-              <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-stone-500">Motichoor Ladoo (x4)</span>
-                  <span className="font-bold">₹180</span>
-                </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-stone-500">Kaju Katli (x6)</span>
-                  <span className="font-bold">₹330</span>
-                </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-stone-500">{selectedBox.name}</span>
+
+              <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                {selectedSweets.map(s => {
+                  const sweet = SWEETS.find(sw => sw.id === s.id);
+                  if(!sweet) return null;
+                  return (
+                    <div key={s.id} className="flex justify-between text-xs sm:text-sm">
+                      <span className="text-stone-500 truncate mr-2">{sweet.name} (x{s.quantity})</span>
+                      <span className="font-bold shrink-0">₹{sweet.price * s.quantity}</span>
+                    </div>
+                  );
+                })}
+                <div className="flex justify-between text-xs sm:text-sm pt-2 border-t border-stone-50">
+                  <span className="text-stone-500 italic">{selectedBox.name}</span>
                   <span className="font-bold">₹{selectedBox.price}</span>
                 </div>
               </div>
+
               <div className="border-t border-stone-100 pt-4 space-y-4">
                 <div className="flex justify-between items-end">
                   <div>
                     <p className="text-[9px] sm:text-[10px] text-stone-500 uppercase tracking-widest font-bold mb-0.5 sm:mb-1">Total Weight</p>
-                    <p className="text-base sm:text-lg font-serif">650g / {selectedBox.capacity}</p>
+                    <p className="text-base sm:text-lg font-serif">{currentWeight}g / {selectedBox.capacity}g</p>
                   </div>
                   <div className="text-right">
                     <p className="text-[9px] sm:text-[10px] text-stone-500 uppercase tracking-widest font-bold mb-0.5 sm:mb-1">Subtotal</p>
-                    <p className="text-2xl sm:text-3xl font-serif text-primary">₹2,110</p>
+                    <p className="text-2xl sm:text-3xl font-serif text-primary">₹{subtotal.toLocaleString()}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex-1 bg-primary text-white py-3 sm:py-4 font-bold text-[10px] sm:text-xs tracking-[0.2em] uppercase hover:bg-primary-dark transition-all">
+                  <button 
+                    onClick={handleAddToCart}
+                    disabled={selectedSweets.length === 0}
+                    className="flex-1 bg-primary text-white py-3 sm:py-4 font-bold text-[10px] sm:text-xs tracking-[0.2em] uppercase hover:bg-primary-dark transition-all disabled:opacity-50"
+                  >
                     Add to Cart
                   </button>
                   <button className="p-3 sm:p-4 bg-stone-100 hover:bg-stone-200 transition-colors">

@@ -1,57 +1,91 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Phone, MapPin, Clock, Mail, MessageSquare, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Phone, MapPin, Clock, Mail, MessageSquare, Send, CheckCircle2, X } from 'lucide-react';
 
 export default function Contact() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+    }, 1500);
+  };
+
   return (
     <div className="pt-20">
-      <header className="relative min-h-[300px] lg:min-h-[400px] flex items-center mb-8 bg-stone-50 overflow-hidden py-8 lg:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+      {/* Success Notification */}
+      <AnimatePresence>
+        {isSuccess && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-4"
+          >
+            <div className="bg-green-600 text-white p-4 shadow-2xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 size={20} />
+                <p className="text-sm font-bold uppercase tracking-widest">Message Sent Successfully!</p>
+              </div>
+              <button onClick={() => setIsSuccess(false)}><X size={18} /></button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <header className="relative min-h-[200px] lg:min-h-[400px] flex items-center mb-0 lg:mb-8 bg-stone-50 overflow-hidden py-4 lg:py-12">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center">
           <div className="lg:col-span-7 z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              className="lg:col-span-12 z-10 text-center lg:text-left"
             >
-              <div className="flex items-center gap-3 lg:gap-4 mb-3 lg:mb-4">
-                <div className="h-px w-6 lg:w-8 bg-primary"></div>
-                <span className="text-primary font-bold tracking-[0.2em] lg:tracking-[0.4em] uppercase text-[8px] lg:text-[10px]">Connect With Us</span>
+              <div className="flex items-center justify-center lg:justify-start gap-4 mb-2 lg:mb-4">
+                <div className="hidden lg:block h-px w-8 bg-primary"></div>
+                <span className="text-primary font-bold tracking-[0.2em] lg:tracking-[0.4em] uppercase text-[10px]">Connect With Us</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif text-stone-900 mb-4 lg:mb-6 tracking-tighter leading-[0.9]">
-                Get in <br/>
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif text-stone-900 mb-2 lg:mb-6 tracking-tighter leading-[0.9]">
+                Get in <br className="hidden sm:block" />
                 <span className="italic font-light text-primary">Touch</span>
               </h1>
-              <div className="max-w-xl">
-                <p className="text-base md:text-xl text-stone-600 font-lora italic leading-relaxed mb-6 border-l-2 border-primary/30 pl-4 lg:pl-6">
+              <div className="max-w-xl mx-auto lg:mx-0">
+                <p className="text-base sm:text-lg md:text-xl text-stone-600 font-lora italic leading-relaxed mb-4 lg:mb-6 lg:border-l-2 lg:border-primary/30 lg:pl-6 px-4 lg:px-0">
                   We’d love to hear from you! Call, Visit or Message us to share the joy of authentic flavors.
                 </p>
-                <div className="flex gap-4 sm:gap-8 items-center">
-                  <div className="flex flex-col">
-                    <span className="text-[9px] lg:text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Response Time</span>
-                    <span className="text-lg lg:text-xl font-serif text-primary">Under 2 Hours</span>
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-8 items-center justify-center lg:justify-start">
+                  <div className="flex flex-col items-center lg:items-start">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-0.5 lg:mb-1">Response Time</span>
+                    <span className="text-lg sm:text-xl font-serif text-primary">Under 2 Hours</span>
                   </div>
-                  <div className="h-6 lg:h-8 w-px bg-stone-200"></div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] lg:text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Availability</span>
-                    <span className="text-lg lg:text-xl font-serif text-primary">7 Days a Week</span>
+                  <div className="hidden sm:block h-8 w-px bg-stone-200"></div>
+                  <div className="flex flex-col items-center lg:items-start">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-0.5 lg:mb-1">Availability</span>
+                    <span className="text-lg sm:text-xl font-serif text-primary">7 Days a Week</span>
                   </div>
                 </div>
               </div>
             </motion.div>
           </div>
-          <div className="lg:col-span-5 relative mt-6 lg:mt-0">
+          <div className="lg:col-span-5 relative mt-4 lg:mt-0">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="relative aspect-square sm:aspect-[4/3] overflow-hidden shadow-2xl"
+              className="relative aspect-[4/3] overflow-hidden shadow-2xl"
             >
               <img 
                 className="w-full h-full object-cover" 
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLoFnsJH0u-Y451kjKj5mzuD-rdsegQGQxhZL_cQUZF9-QHXGIadJ_47d7KyudMzxWC8XHpSTsfa_ARLY_pZPFEWA6v9sl5yqqLZON0RyFOEiS51TojpSNxwPlOGf6LFekr0KfMOzt7IfiOP8h3RekkLOSqP02C8_jW6iA-Coi7oz8au62EtRBv0wjBGHA3zTjjUvS6U15e-jtp4cO29McIhDm50gt3EhmG8OHwoNWvoq2t02RkZNkXGhJb8Lg5Pb_cIJaODikc-U" 
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 border-[8px] lg:border-[12px] border-white/20 pointer-events-none"></div>
+              <div className="absolute inset-0 border-[12px] border-white/20 pointer-events-none"></div>
             </motion.div>
             {/* Decorative elements */}
             <div className="absolute -top-12 -right-12 w-48 h-48 border border-primary/10 rounded-full hidden lg:block"></div>
@@ -64,7 +98,7 @@ export default function Contact() {
         </div>
       </header>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16 mt-0 lg:-mt-16 relative z-10">
+      <section className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-8 py-10 lg:py-16 mt-0 lg:-mt-16 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           {/* Contact Info */}
           <div className="lg:col-span-5 relative rounded-none overflow-hidden shadow-2xl bg-white border border-stone-100 min-h-[auto] lg:min-h-[600px]">
@@ -138,24 +172,24 @@ export default function Contact() {
           </div>
 
           {/* Contact Form */}
-          <div className="lg:col-span-7 bg-stone-50 p-6 md:p-8 lg:p-12 rounded-none shadow-sm border border-stone-100">
+          <div className="lg:col-span-7 bg-stone-50 p-8 md:p-8 lg:p-12 rounded-none shadow-sm border border-stone-100">
             <div className="mb-6 lg:mb-10">
               <span className="text-primary font-bold tracking-widest uppercase text-[10px] lg:text-xs block mb-1 lg:mb-2">Online Inquiry</span>
               <h2 className="font-serif text-3xl lg:text-4xl mb-3 lg:mb-4">Send Us a Message</h2>
               <p className="text-stone-500 text-sm lg:text-base">Have a specific request or feedback? Our team usually responds within 2 hours during business hours.</p>
             </div>
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
               <div className="space-y-1 lg:space-y-2">
                 <label className="text-[10px] lg:text-xs font-bold text-stone-500 uppercase ml-1 tracking-wider">Full Name</label>
-                <input className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="John Doe" type="text" />
+                <input required className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="John Doe" type="text" />
               </div>
               <div className="space-y-1 lg:space-y-2">
                 <label className="text-[10px] lg:text-xs font-bold text-stone-500 uppercase ml-1 tracking-wider">Phone Number</label>
-                <input className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="+91 00000 00000" type="tel" />
+                <input required className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="+91 00000 00000" type="tel" />
               </div>
               <div className="space-y-1 lg:space-y-2">
                 <label className="text-[10px] lg:text-xs font-bold text-stone-500 uppercase ml-1 tracking-wider">Email Address</label>
-                <input className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="john@example.com" type="email" />
+                <input required className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="john@example.com" type="email" />
               </div>
               <div className="space-y-1 lg:space-y-2">
                 <label className="text-[10px] lg:text-xs font-bold text-stone-500 uppercase ml-1 tracking-wider">Subject</label>
@@ -168,11 +202,16 @@ export default function Contact() {
               </div>
               <div className="md:col-span-2 space-y-1 lg:space-y-2">
                 <label className="text-[10px] lg:text-xs font-bold text-stone-500 uppercase ml-1 tracking-wider">Your Message</label>
-                <textarea className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="Tell us how we can help you..." rows={5}></textarea>
+                <textarea required className="w-full bg-white border-stone-200 rounded-none px-4 py-3 lg:px-6 lg:py-4 focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm lg:text-base" placeholder="Tell us how we can help you..." rows={5}></textarea>
               </div>
               <div className="md:col-span-2 pt-2 lg:pt-4">
-                <button className="w-full md:w-max px-8 py-4 lg:px-12 lg:py-5 bg-primary text-white rounded-none font-bold text-base lg:text-lg shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2 lg:gap-3" type="submit">
-                  <Send size={18} className="lg:w-5 lg:h-5" /> Send Message
+                <button 
+                  disabled={isSubmitting}
+                  className="w-full md:w-max px-8 py-4 lg:px-12 lg:py-5 bg-primary text-white rounded-none font-bold text-base lg:text-lg shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-2 lg:gap-3 disabled:opacity-50" 
+                  type="submit"
+                >
+                  <Send size={18} className="lg:w-5 lg:h-5" /> 
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </div>
             </form>

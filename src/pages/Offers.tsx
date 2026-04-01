@@ -2,11 +2,13 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Timer, ArrowRight, Gift, Users, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCart } from '../context/CartContext';
 
 const CATEGORIES = ['All', 'Sweets & Gift Boxes', 'Restaurant Combos', 'Festival Specials', 'Lunch/Dinner Deals', 'Bulk Orders'];
 
 const OFFERS = [
   { 
+    id: 'off-1',
     title: 'Heritage Motichoor Pack', 
     disc: '25% OFF', 
     price: 599, 
@@ -17,6 +19,7 @@ const OFFERS = [
     dietary: 'Veg'
   },
   { 
+    id: 'off-2',
     title: 'Evening Snackers Combo', 
     disc: '15% OFF', 
     price: 340, 
@@ -27,6 +30,7 @@ const OFFERS = [
     dietary: 'Veg'
   },
   { 
+    id: 'off-3',
     title: 'Premium Kaju Katli', 
     disc: '20% OFF', 
     price: 880, 
@@ -37,6 +41,7 @@ const OFFERS = [
     dietary: 'Veg'
   },
   { 
+    id: 'off-4',
     title: 'Maharaja Lunch Thali', 
     disc: '30% OFF', 
     price: 450, 
@@ -49,6 +54,7 @@ const OFFERS = [
 ];
 
 export default function Offers() {
+  const { addToCart } = useCart();
   const [activeCategory, setActiveCategory] = React.useState('All');
   const [activeDietary, setActiveDietary] = React.useState('All');
 
@@ -57,6 +63,19 @@ export default function Offers() {
     const matchesDietary = activeDietary === 'All' || offer.dietary === activeDietary;
     return matchesCategory && matchesDietary;
   });
+
+  const handleClaimOffer = (offer: typeof OFFERS[0]) => {
+    addToCart({
+      id: offer.id,
+      name: offer.title,
+      description: `Special Offer: ${offer.disc}`,
+      price: offer.price,
+      image: offer.img,
+      category: offer.category,
+      dietary: offer.dietary,
+      isSpecial: true
+    });
+  };
 
   return (
     <div className="pt-20">
@@ -227,7 +246,10 @@ export default function Offers() {
                 <Timer size={12} className="text-primary lg:w-4 lg:h-4" />
                 <span>Expires in {filteredOffers[0].time}</span>
               </div>
-              <button className="w-full py-3 lg:py-5 bg-primary text-white font-bold uppercase tracking-[0.2em] text-[9px] lg:text-xs hover:bg-primary-dark transition-all shadow-lg">
+              <button 
+                onClick={() => handleClaimOffer(filteredOffers[0])}
+                className="w-full py-3 lg:py-5 bg-primary text-white font-bold uppercase tracking-[0.2em] text-[9px] lg:text-xs hover:bg-primary-dark transition-all shadow-lg"
+              >
                 Claim Featured Offer
               </button>
             </div>
@@ -267,7 +289,10 @@ export default function Offers() {
                     <span className="text-stone-400 line-through text-[8px] sm:text-[9px] lg:text-[10px] font-bold">₹{offer.oldPrice}</span>
                     <span className="text-base sm:text-xl lg:text-2xl font-black text-primary">₹{offer.price}</span>
                   </div>
-                  <button className="w-full sm:w-auto px-2 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-3 bg-stone-900 text-white text-[8px] sm:text-[9px] lg:text-[10px] font-bold uppercase tracking-widest hover:bg-primary transition-colors text-center">
+                  <button 
+                    onClick={() => handleClaimOffer(offer)}
+                    className="w-full sm:w-auto px-2 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-3 bg-stone-900 text-white text-[8px] sm:text-[9px] lg:text-[10px] font-bold uppercase tracking-widest hover:bg-primary transition-colors text-center"
+                  >
                     Claim
                   </button>
                 </div>
@@ -316,7 +341,20 @@ export default function Offers() {
                   ))}
                 </div>
                 
-                <button className="group relative px-6 py-3 lg:px-12 lg:py-5 bg-primary text-white font-bold text-[9px] lg:text-sm uppercase tracking-[0.2em] lg:tracking-[0.3em] overflow-hidden w-full sm:w-auto">
+                <button 
+                  onClick={() => handleClaimOffer({
+                    id: 'midnight-1',
+                    title: 'Midnight Indulgence Box',
+                    disc: '50% OFF',
+                    price: 499,
+                    oldPrice: 999,
+                    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCKipgEkB8B0TCDYMOsLkh0Bu6Hf2WZR0UB4MqtyO1NhQ5LozjsXM7nSc5U3rEZuIIxtQrF3btMWqA8J2Pyinr03l74Jo6LlbbqfBPRZCXwjIPM9EbTBrYxlk5-YvdRJ_tieZT17zQ9XywMbp1YcOOSCYaaO6ujzRdV_UEjLAN99FL4WziPW3j4RQ-joMqQwBv6FwSruHj_9rcRMjDgS4iRA60Lz9MGq4Emh6-OC93ubCVgeqYkBqmmwPLeQ3lAmv88vu_FYakGybE',
+                    category: 'Midnight Special',
+                    dietary: 'Veg',
+                    time: '00:42:18'
+                  })}
+                  className="group relative px-6 py-3 lg:px-12 lg:py-5 bg-primary text-white font-bold text-[9px] lg:text-sm uppercase tracking-[0.2em] lg:tracking-[0.3em] overflow-hidden w-full sm:w-auto"
+                >
                   <span className="relative z-10">Unlock Midnight Deal</span>
                   <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-10"></div>
                 </button>

@@ -1,12 +1,15 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Search, Filter, Plus } from 'lucide-react';
 import { MENU_ITEMS } from '@/mockData';
 import { cn } from '@/lib/utils';
 
 const CATEGORIES = ['All', 'Sweets', 'Savouries', 'Mains', 'Biryani', 'Desserts'];
 
+import { useCart } from '../context/CartContext';
+
 export default function Menu() {
+  const { addToCart } = useCart();
   const [activeCategory, setActiveCategory] = React.useState('All');
   const [activeDietary, setActiveDietary] = React.useState('All');
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -20,7 +23,8 @@ export default function Menu() {
 
   return (
     <div className="pt-20">
-      <header className="relative min-h-[300px] lg:min-h-[400px] flex items-center mb-0 lg:mb-8 bg-stone-50 overflow-hidden py-6 lg:py-12">
+      {/* ... header and filter bar (unchanged) ... */}
+      <header className="relative min-h-[300px] lg:min-h-[400px] flex items-center mb-0 lg:mb-8 bg-surface-muted overflow-hidden py-6 lg:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center">
           <div className="lg:col-span-7 z-10">
             <motion.div
@@ -86,7 +90,7 @@ export default function Menu() {
               onClick={() => setActiveDietary('All')}
               className={cn(
                 "flex-1 md:flex-none px-4 sm:px-8 py-3 sm:py-4 border-r border-stone-100 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all duration-300 flex items-center justify-center md:justify-start",
-                activeDietary === 'All' ? "bg-primary text-white" : "text-stone-500 hover:bg-stone-50"
+                activeDietary === 'All' ? "bg-primary text-white" : "text-text-muted hover:bg-surface-muted"
               )}
             >
               All
@@ -95,7 +99,7 @@ export default function Menu() {
               onClick={() => setActiveDietary('Veg')}
               className={cn(
                 "flex-1 md:flex-none px-4 sm:px-8 py-3 sm:py-4 border-r border-stone-100 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] transition-all duration-300 flex items-center justify-center md:justify-start gap-1.5 sm:gap-2",
-                activeDietary === 'Veg' ? "bg-secondary text-white" : "text-stone-500 hover:bg-stone-50"
+                activeDietary === 'Veg' ? "bg-secondary text-white" : "text-text-muted hover:bg-surface-muted"
               )}
             >
               <span className={cn("w-1.5 h-1.5", activeDietary === 'Veg' ? "bg-white" : "bg-secondary")}></span> Veg
@@ -117,7 +121,7 @@ export default function Menu() {
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
                   "px-5 sm:px-6 py-3 sm:py-4 border-l border-stone-100 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] whitespace-nowrap transition-all duration-300 flex items-center",
-                  activeCategory === cat ? "bg-tertiary text-white" : "hover:bg-stone-50 text-stone-500"
+                  activeCategory === cat ? "bg-tertiary text-white" : "hover:bg-surface-muted text-text-muted"
                 )}
               >
                 {cat}
@@ -149,46 +153,59 @@ export default function Menu() {
         </motion.div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border-t border-l border-stone-200">
-          {filteredItems.map((item) => (
-            <motion.div 
-              layout
-              key={item.id} 
-              className="flex flex-col group border-r border-b border-stone-200 p-0 bg-white"
-            >
-              <div className="relative aspect-square overflow-hidden border-b border-stone-100">
-                <img 
-                  className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-500" 
-                  src={item.image} 
-                  alt={item.name}
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute top-0 right-0 p-1.5 sm:p-3">
-                  <div className="bg-white p-0.5 sm:p-1 border border-stone-200">
-                    <div className={cn("w-2 h-2 sm:w-3 sm:h-3", item.dietary === 'Veg' ? 'bg-secondary' : 'bg-red-600')}></div>
+          <AnimatePresence mode="popLayout">
+            {filteredItems.map((item, i) => (
+              <motion.div 
+                layout
+                key={item.id} 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: (i % 8) * 0.05,
+                  layout: { type: "spring", stiffness: 300, damping: 30 }
+                }}
+                className="flex flex-col group border-r border-b border-stone-200 p-0 bg-white"
+              >
+                <div className="relative aspect-square overflow-hidden border-b border-stone-100">
+                  <img 
+                    className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-500" 
+                    src={item.image} 
+                    alt={item.name}
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute top-0 right-0 p-1.5 sm:p-3">
+                    <div className="bg-white p-0.5 sm:p-1 border border-stone-200">
+                      <div className={cn("w-2 h-2 sm:w-3 sm:h-3", item.dietary === 'Veg' ? 'bg-secondary' : 'bg-red-600')}></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-3 sm:p-6 flex flex-col flex-1">
-                <div className="flex items-start justify-between mb-1 sm:mb-2">
-                  <h4 className="text-sm sm:text-xl mb-1 pr-1 sm:pr-2 leading-tight">{item.name}</h4>
-                  {item.spicyLevel && (
-                    <div className="flex shrink-0 mt-0.5 sm:mt-1">
-                      {[...Array(item.spicyLevel)].map((_, i) => (
-                        <span key={i} className="text-[8px] sm:text-[10px] text-primary">🌶️</span>
-                      ))}
-                    </div>
-                  )}
+                <div className="p-3 sm:p-6 flex flex-col flex-1">
+                  <div className="flex items-start justify-between mb-1 sm:mb-2">
+                    <h4 className="text-sm sm:text-lg lg:text-xl font-serif text-stone-900 group-hover:text-primary transition-colors pr-1 sm:pr-2 leading-tight">{item.name}</h4>
+                    {item.spicyLevel && (
+                      <div className="flex shrink-0 mt-0.5 sm:mt-1">
+                        {[...Array(item.spicyLevel)].map((_, i) => (
+                          <span key={i} className="text-[8px] sm:text-[10px]">🌶️</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <p className="font-lora text-[10px] sm:text-sm text-stone-500 mb-3 sm:mb-6 leading-relaxed italic line-clamp-2 sm:line-clamp-none flex-grow">{item.description}</p>
+                  <div className="mt-auto flex items-center justify-between">
+                    <span className="text-sm sm:text-xl font-serif text-primary">₹{item.price}</span>
+                    <button 
+                      onClick={() => addToCart(item)}
+                      className="w-8 h-8 sm:w-12 sm:h-12 bg-stone-50 border border-stone-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all"
+                    >
+                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                  </div>
                 </div>
-                <p className="font-lora text-[10px] sm:text-sm text-on-surface-variant mb-3 sm:mb-6 leading-relaxed italic line-clamp-2 sm:line-clamp-none">{item.description}</p>
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="text-sm sm:text-xl font-serif text-primary">₹{item.price}</span>
-                  <button className="w-8 h-8 sm:w-12 sm:h-12 bg-stone-50 border border-stone-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all">
-                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </main>
     </div>
