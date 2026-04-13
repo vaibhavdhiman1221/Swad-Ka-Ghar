@@ -28,5 +28,32 @@
     <script 
       src="https://rhghorkwaedwkayjambc.supabase.co/functions/v1/widget?id=8"
     ></script>
+    <script>
+      (function() {
+        // Only run on the homepage
+        if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') return;
+
+        function tryOpening() {
+          var btn = document.getElementById('chatlayer-btn');
+          if (btn) {
+            btn.click();
+            return true;
+          }
+          return false;
+        }
+        
+        if (!tryOpening()) {
+          var observer = new MutationObserver(function(mutations) {
+            if (tryOpening()) {
+              observer.disconnect();
+            }
+          });
+          observer.observe(document.body, { childList: true });
+          
+          // Fallback
+          setTimeout(function() { observer.disconnect(); }, 5000);
+        }
+      })();
+    </script>
   </body>
 </html>
