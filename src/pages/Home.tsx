@@ -236,10 +236,10 @@ export default function Home() {
           </motion.div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
             {([
-              { title: 'Heritage Sweets', desc: 'Time-honored confections crafted with pure desi ghee and saffron.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD9LxMTOUL4FzBJDXAUMtFssfSCFxGj7MsZ4zhKWaXeouTQkzMUCVt8gop0j6JkZgzx0n3bzdQp6OWCgAIWDKGq6PM0D8NomZQLl75ghjgFoju9rUkY81MvpJquLtlFdIoiLYNC1L3U86Im-2DvzHEyoZMEtnF8TTJwkBpKfwUaNKzRYsY3xn6Z2XLokYhirBgagFufHWnKEZZnDCRmtS_qNjlarpaKrueHhNfSr3g9Gdvhxzg7BdKyFeRRASqf5riGJP63yx86GUQ' },
-              { title: 'Artisanal Savouries', desc: 'Crispy, spiced delights that celebrate the vibrant street flavors of India.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_BD4UTdbkMqkP4lTyCskCHvPfnJKR2VUQz_BMMqK-aCMPeTjfgVlViz7V948OXte0XB-Qsq5hQDFSvyySSX86Y6gUsHYencVSd9xzEQLZYi-zgy70WhLyHUPv1WApsgULkderLSgMDL079v2_KDHC1-SPeJKL5xumXBjsFmvJhItCDy1pMU2LPvPW3NThexcjyjZRR1rNIXj1xxuD2y94QzXF3tXOu2Ut0R9f4_UDfnQa6dxZ6zYwjKmEkRm21TSppIleOoqKCe0' },
-              { title: 'The Main Hearth', desc: 'Hearty, slow-cooked meals that bring the warmth of our family kitchen.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJqVNP47qh29TE24XwWCCQ9ouyHrUmLEdcFVfONs2wnVVd0efAp5kojqR8aImf9Kl74pG98N6vro0s_-fl8C_x-VlEWm2jp9jHEuIkX23bjV9TcIPpHncWdZElAQ6Poh-srUA1_zZQy47WP8onDOeJkWxXCBehifNkn6lAlafTxqF88Ei-ggN5YEYZubw8nhTdsPblXXrArMrHUyG4aAIXZBtpcYQjScU5KnzaGt3Jp5ZSYQeRiw3X3uwWI-20tYesxF0Z4HvpFsU' },
-              { title: 'Soulful Sips', desc: 'Refreshing traditional drinks, from Masala Chai to cooling Lassi.', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD8tsBP9DAEkaGJIdtZ8e66ufsPU_lQN6nPG0mg4QFdCu6e98n-fAP4RhORJ_q99mTrpGFxV9UaQH4svgWDoatcLQA_cihQxN56AueznV4HuIZ3tvrwwzWFit3lZIX1Chv-JzgI_I1eLA3Ne0cp-eNnfEDocaV9VtMzjMYgC5VmgXpms3I57aw49G9o4BHnl19k2K2hQe4fo0VyG8wKdHKHmOpg9ujTuBjkyy5h3qEo85hLRogJ9ok7SVKlWS9V9D-Avhjh6luhYAA' }
+              { title: 'Heritage Sweets', desc: 'Time-honored confections crafted with pure desi ghee and saffron.', img: '/Assets/Signature Menu/HeritageSweet.jpeg' },
+              { title: 'Artisanal Savouries', desc: 'Crispy, spiced delights that celebrate the vibrant street flavors of India.', img: '/Assets/Signature Menu/Artisanal Savouries.jpg' },
+              { title: 'The Main Hearth', desc: 'Hearty, slow-cooked meals that bring the warmth of our family kitchen.', img: '/Assets/Signature Menu/TheMainHeart.jpeg' },
+              { title: 'Soulful Sips', desc: 'Refreshing traditional drinks, from Masala Chai to cooling Lassi.', img: '/Assets/Signature Menu/Soulful Sips.jpg' }
             ] as const).map((cat, i) => (
               <motion.div 
                 key={i}
