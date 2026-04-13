@@ -105,11 +105,17 @@ export default function Home() {
                 <motion.img 
                   alt="Indian Food" 
                   className="w-full h-full object-cover" 
-                  animate={{ rotate: [0, -30, 0, 30, 0] }}
+                  initial={{ scale: 1.1 }}
+                  animate={{ 
+                    rotate: [0, -30, 0, 30, 0],
+                    scale: 1.1
+                  }}
                   transition={{ 
-                    duration: 60, 
-                    repeat: Infinity, 
-                    ease: "easeInOut" 
+                    rotate: {
+                      duration: 60, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }
                   }}
                   src="/Assets/hero_image.jpg"
                   referrerPolicy="no-referrer"
